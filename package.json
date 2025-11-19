@@ -101,8 +101,22 @@
       {
         "command": "vaultguard.addSKUToBlocklist",
         "title": "VaultGuard: Add SKU to Blocklist"
+      },
+      {
+        "command": "vaultguard.removeSKUFromBlocklist",
+        "title": "Remove from Blocklist",
+        "icon": "$(trash)"
       }
-    ]
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "vaultguard.removeSKUFromBlocklist",
+          "when": "view == vaultguard.configuration && viewItem == blocked-sku",
+          "group": "inline"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
