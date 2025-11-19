@@ -4,6 +4,7 @@ import { validateDataResidency, Violation } from './rules/dataResidency';
 import { validateSecrets } from './rules/secrets';
 import { validateEncryption } from './rules/encryption';
 import { validatePortability } from './rules/portability';
+import { validateCostOptimization } from './rules/costOptimization';
 
 export function scanContent(content: string): Violation[] {
     try {
@@ -12,6 +13,7 @@ export function scanContent(content: string): Violation[] {
         violations = violations.concat(validateSecrets(parsed));
         violations = violations.concat(validateEncryption(parsed));
         violations = violations.concat(validatePortability(parsed));
+        violations = violations.concat(validateCostOptimization(parsed));
         return violations;
     } catch (e) {
         console.error('Error parsing Terraform:', e);
