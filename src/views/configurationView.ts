@@ -41,6 +41,20 @@ export class ConfigurationViewProvider implements vscode.TreeDataProvider<Config
             return Promise.resolve(this.getSKUItems());
         }
 
+        if (element.contextValue === 'blocklist') {
+            const { blocklist } = this.settingsManager.getSettings().skus;
+            return Promise.resolve(blocklist.map(sku => 
+                new ConfigItem(sku, 'sku-item', vscode.TreeItemCollapsibleState.None)
+            ));
+        }
+
+        if (element.contextValue === 'allowlist') {
+            const { allowlist } = this.settingsManager.getSettings().skus;
+            return Promise.resolve(allowlist.map(sku => 
+                new ConfigItem(sku, 'sku-item', vscode.TreeItemCollapsibleState.None)
+            ));
+        }
+
         return Promise.resolve([]);
     }
 
@@ -66,7 +80,6 @@ export class ConfigurationViewProvider implements vscode.TreeDataProvider<Config
 
         if (blocklist.length > 0) {
             const blocklistItem = new ConfigItem('Blocked SKUs', 'blocklist', vscode.TreeItemCollapsibleState.Collapsed);
-            blocklistItem.description = blocklist.join(', ');
             items.push(blocklistItem);
         }
 
