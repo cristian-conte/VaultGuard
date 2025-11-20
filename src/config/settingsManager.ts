@@ -17,17 +17,13 @@ export interface VaultGuardSettings {
 
 export class SettingsManager {
     private static instance: SettingsManager;
-    private config: vscode.WorkspaceConfiguration;
     private _onDidChangeSettings: vscode.EventEmitter<VaultGuardSettings> = new vscode.EventEmitter<VaultGuardSettings>();
     readonly onDidChangeSettings: vscode.Event<VaultGuardSettings> = this._onDidChangeSettings.event;
 
     private constructor() {
-        this.config = vscode.workspace.getConfiguration('vaultguard');
-        
         // Watch for configuration changes
         vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('vaultguard')) {
-                this.config = vscode.workspace.getConfiguration('vaultguard');
                 this._onDidChangeSettings.fire(this.getSettings());
             }
         });
@@ -41,34 +37,36 @@ export class SettingsManager {
     }
 
     getSettings(): VaultGuardSettings {
+        const config = vscode.workspace.getConfiguration('vaultguard');
         return {
             rules: {
                 dataResidency: {
-                    enabled: this.config.get('rules.dataResidency.enabled', true)
+                    enabled: config.get('rules.dataResidency.enabled', true)
                 },
                 secrets: {
-                    enabled: this.config.get('rules.secrets.enabled', true)
+                    enabled: config.get('rules.secrets.enabled', true)
                 },
                 encryption: {
-                    enabled: this.config.get('rules.encryption.enabled', true)
+                    enabled: config.get('rules.encryption.enabled', true)
                 },
                 portability: {
-                    enabled: this.config.get('rules.portability.enabled', true)
+                    enabled: config.get('rules.portability.enabled', true)
                 },
                 costOptimization: {
-                    enabled: this.config.get('rules.costOptimization.enabled', true)
+                    enabled: config.get('rules.costOptimization.enabled', true)
                 }
             },
             skus: {
-                allowlist: this.config.get('skus.allowlist', []),
-                blocklist: this.config.get('skus.blocklist', ['t3.2xlarge', 'm5.4xlarge', 'r5.4xlarge'])
+                allowlist: config.get('skus.allowlist', []),
+                blocklist: config.get('skus.blocklist', ['t3.2xlarge', 'm5.4xlarge', 'r5.4xlarge'])
             },
-            costThreshold: this.config.get('costThreshold', 100)
+            costThreshold: config.get('costThreshold', 100)
         };
     }
 
     async updateSetting(key: string, value: any, global: boolean = false): Promise<void> {
-        await this.config.update(key, value, global ? vscode.ConfigurationTarget.Global : vscode.ConfigurationTarget.Workspace);
+        const config = vscode.workspace.getConfiguration('vaultguard');
+        await config.update(key, value, global ? vscode.ConfigurationTarget.Global : vscode.ConfigurationTarget.Workspace);
     }
 
     isRuleEnabled(ruleName: string): boolean {
