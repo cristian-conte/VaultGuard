@@ -111,7 +111,17 @@ export class ConfigurationViewProvider implements vscode.TreeDataProvider<Config
             items.push(blocklistItem);
         }
 
-        items.push(new ConfigItem('Add to Blocklist...', 'add-sku', vscode.TreeItemCollapsibleState.None));
+        const addButton = new ConfigItem(
+            'Add to Blocklist...', 
+            'add-sku', 
+            vscode.TreeItemCollapsibleState.None,
+            {
+                command: 'vaultguard.addSKUToBlocklist',
+                title: 'Add SKU to Blocklist'
+            }
+        );
+        addButton.iconPath = new vscode.ThemeIcon('add');
+        items.push(addButton);
 
         return items;
     }

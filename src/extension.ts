@@ -94,7 +94,8 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('vaultguard.removeSKUFromBlocklist', async (sku: string) => {
+        vscode.commands.registerCommand('vaultguard.removeSKUFromBlocklist', async (item: any) => {
+            const sku = item.label;
             const settings = settingsManager.getSettings();
             const blocklist = settings.skus.blocklist.filter(s => s !== sku);
             await settingsManager.updateSetting('skus.blocklist', blocklist);
