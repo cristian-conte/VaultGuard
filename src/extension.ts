@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { scanContent } from './scanner';
 import { RegionFixProvider } from './fixes/regionFix';
 import { scanAndCommit } from './commands/scanAndCommit';
+import { generateComplianceReport } from './commands/generateComplianceReport';
 import { ConfigurationViewProvider } from './views/configurationView';
 import { SettingsManager } from './config/settingsManager';
 import { SKU_CATALOG, getAllSKUs } from './config/skuCatalog';
@@ -24,6 +25,10 @@ export function activate(context: vscode.ExtensionContext) {
     // Register Commands
     context.subscriptions.push(
         vscode.commands.registerCommand('vaultguard.scanAndCommit', scanAndCommit)
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('vaultguard.generateComplianceReport', generateComplianceReport)
     );
 
     context.subscriptions.push(
