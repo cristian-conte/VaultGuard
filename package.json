@@ -106,6 +106,10 @@
         "command": "vaultguard.removeSKUFromBlocklist",
         "title": "Remove from Blocklist",
         "icon": "$(trash)"
+      },
+      {
+        "command": "vaultguard.generateComplianceReport",
+        "title": "VaultGuard: Generate Compliance Report"
       }
     ],
     "menus": {
