@@ -4,14 +4,33 @@ import { validateDataResidency, Violation } from './rules/dataResidency';
 import { validateSecrets } from './rules/secrets';
 import { validateEncryption } from './rules/encryption';
 import { validatePortability } from './rules/portability';
+import { validateCostOptimization } from './rules/costOptimization';
+import { SettingsManager } from './config/settingsManager';
 
 export function scanContent(content: string): Violation[] {
+    const settingsManager = SettingsManager.getInstance();
+    
     try {
         const parsed = parseTerraform(content);
-        let violations = validateDataResidency(parsed);
-        violations = violations.concat(validateSecrets(parsed));
-        violations = violations.concat(validateEncryption(parsed));
-        violations = violations.concat(validatePortability(parsed));
+        let violations: Violation[] = [];
+        
+        // Only run enabled rules
+        if (settingsManager.isRuleEnabled('dataResidency')) {
+            violations = violations.concat(validateDataResidency(parsed));
+        }
+        if (settingsManager.isRuleEnabled('secrets')) {
+            violations = violations.concat(validateSecrets(parsed));
+        }
+        if (settingsManager.isRuleEnabled('encryption')) {
+            violations = violations.concat(validateEncryption(parsed));
+        }
+        if (settingsManager.isRuleEnabled('portability')) {
+            violations = violations.concat(validatePortability(parsed));
+        }
+        if (settingsManager.isRuleEnabled('costOptimization')) {
+            violations = violations.concat(validateCostOptimization(parsed));
+        }
+        
         return violations;
     } catch (e) {
         console.error('Error parsing Terraform:', e);

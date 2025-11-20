@@ -17,6 +17,74 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "VaultGuard",
+      "properties": {
+        "vaultguard.rules.dataResidency.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable OSFI B-10 data residency checks"
+        },
+        "vaultguard.rules.secrets.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable OSFI B-13 secrets management checks"
+        },
+        "vaultguard.rules.encryption.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable OSFI B-13 encryption checks"
+        },
+        "vaultguard.rules.portability.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable OSFI B-10 portability checks"
+        },
+        "vaultguard.rules.costOptimization.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable cost optimization warnings"
+        },
+        "vaultguard.skus.allowlist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "SKUs to allow (if set, only these SKUs are permitted)"
+        },
+        "vaultguard.skus.blocklist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["t3.2xlarge", "m5.4xlarge", "r5.4xlarge"],
+          "description": "SKUs to block/disallow"
+        },
+        "vaultguard.costThreshold": {
+          "type": "number",
+          "default": 100,
+          "description": "Monthly cost threshold for warnings (USD)"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vaultguard",
+          "title": "VaultGuard",
+          "icon": "resources/shield.svg"
+        }
+      ]
+    },
+    "views": {
+      "vaultguard": [
+        {
+          "id": "vaultguard.configuration",
+          "name": "Configuration"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "vaultguard.scan",
@@ -25,8 +93,45 @@
       {
         "command": "vaultguard.scanAndCommit",
         "title": "VaultGuard: Scan & Populate Commit"
+      },
+      {
+        "command": "vaultguard.toggleRule",
+        "title": "VaultGuard: Toggle Rule"
+      },
+      {
+        "command": "vaultguard.addSKUToBlocklist",
+        "title": "VaultGuard: Add SKU to Blocklist"
+      },
+      {
+        "command": "vaultguard.removeSKUFromBlocklist",
+        "title": "Remove from Blocklist",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "vaultguard.addCatalogSKUToBlocklist",
+        "title": "Add to Blocklist",
+        "icon": "$(add)"
       }
-    ]
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "vaultguard.removeSKUFromBlocklist",
+          "when": "view == vaultguard.configuration && viewItem == blocked-sku",
+          "group": "inline"
+        },
+        {
+          "command": "vaultguard.addCatalogSKUToBlocklist",
+          "when": "view == vaultguard.configuration && viewItem == catalog-sku-available",
+          "group": "inline"
+        },
+        {
+          "command": "vaultguard.removeSKUFromBlocklist",
+          "when": "view == vaultguard.configuration && viewItem == catalog-sku-blocked",
+          "group": "inline"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

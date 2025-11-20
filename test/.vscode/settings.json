@@ -1,0 +1,9 @@
+{
+  "vaultguard.rules.costOptimization.enabled": true,
+  "vaultguard.skus.blocklist": [
+    "t3.2xlarge",
+    "m5.4xlarge",
+    "r5.4xlarge",
+    "t3.nano"
+  ]
+}
